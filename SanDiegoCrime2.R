@@ -4,6 +4,7 @@
 # upload libraries
 library(dplyr)
 library(downloader)
+library(data.table)
 
 
 # Upload Crime Data text file (in Zip format) from source, unzip, & save as crime using fread
@@ -37,11 +38,11 @@ enc_cri %>%
 # count Encinitas crimes by CM_LEGEND by counting rows using nrow
 
 # export table to CSV file
-write.csv(enc_cri, file = "C:/Users/Kam/Desktop/data/crimedata_2019/Encinitas_Crime_kam.csv")
+#write.csv(enc_cri, file = "***USE YOUR OWN PATH HERE***/Encinitas_Crime_kam.csv")
 
 # Group entire crime dataset by zip code, then by type of crime (CM_LEGEND)
-# first format the date to delete time & only keep date
-crime$activityDate <- charToDate(crime$activityDate)
+# below line not needed
+# crime_work$activityDate <- charToDate(crime$activityDate)
 
 # now group by Zip
 crime %>%
