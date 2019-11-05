@@ -2,7 +2,6 @@
 # Data source: SANDAG, https://www.sandiego.gov/police/services/statistics, 
 # Automated Regional Justice Information System (ARJIS)
 # upload libraries
-library(data.table)
 library(dplyr)
 library(downloader)
 
@@ -24,7 +23,7 @@ crime_work$activityDate <- mdy_hms(crime_work$activityDate,tz=Sys.timezone())
 crime_work$activityDate <- as.Date(crime_work$activityDate)
 
 # Seperate out crime data for Encinitas, Zipcode of 92024
-enc_cri <- crime_work [ which(ZipCode==92024),]
+enc_cri <- crime_work [ which(crime_work$community == "ENCINITAS"),]
 
 # group by date
 enc_cri %>%
@@ -34,6 +33,8 @@ enc_cri %>%
 enc_cri %>%
      group_by(enc_cri$CM_LEGEND) %>%
      arrange(CM_LEGEND)
+
+# count Encinitas crimes by CM_LEGEND by counting rows using nrow
 
 # export table to CSV file
 write.csv(enc_cri, file = "C:/Users/Kam/Desktop/data/crimedata_2019/Encinitas_Crime_kam.csv")
