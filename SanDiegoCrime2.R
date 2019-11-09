@@ -23,34 +23,27 @@ library(lubridate)
 crime_work$activityDate <- mdy_hms(crime_work$activityDate,tz=Sys.timezone())
 crime_work$activityDate <- as.Date(crime_work$activityDate)
 
-# Seperate out crime data for Encinitas, Zipcode of 92024
-enc_cri <- crime_work [ which(crime_work$community == "ENCINITAS"),]
+# Seperate out crime data for Encinitas
+# enc_cri <- crime_work [ which(crime_work$community == "ENCINITAS"),]
+# Try new method in dplyr using %>%
+View(enc_cri <- crime_work %>%
+  filter(community == "ENCINITAS") %>%
+  group_by(CM_LEGEND) %>%
+  arrange(CM_LEGEND))
 
-# group by date
-enc_cri %>%
-     group_by(enc_cri$activityDate)
+# create pivot table for Encinitas crimes descending by most number of crimes
+result <- pivotr(
+  enc_cri, 
+  cvars = "CM_LEGEND", 
+  tabsort = "desc(n_obs)", 
+  nr = Inf
+)
 
-# redo group by crime type (CM_LEGEND) for more useful table
-enc_cri %>%
-     group_by(enc_cri$CM_LEGEND) %>%
-     arrange(CM_LEGEND)
+# create dynamic data table 
+dtab(result, dec = 0, pageLength = -1) %>% render()
 
-# count Encinitas crimes by CM_LEGEND by counting rows using nrow
+# plot the pivot table, grouping crimes in Encinitas in descending order
+plot(result)
 
-# export table to CSV file
-#write.csv(enc_cri, file = "***USE YOUR OWN PATH HERE***/Encinitas_Crime_kam.csv")
 
-# Group entire crime dataset by zip code, then by type of crime (CM_LEGEND)
-# below line not needed
-# crime_work$activityDate <- charToDate(crime$activityDate)
 
-# now group by Zip
-crime %>%
-     group_by(crime$ZipCode) %>%
-     arrange(ZipCode)
-
-county <- crime %>%
-     select(CM_LEGEND, ZipCode, community) %>%
-     group_by(ZipCode) %>%
-     arrange(ZipCode)
-write.csv(county, file = "C:/Users/Kam/Desktop/data/crimedata_2019/SD_County_Crime_kam.csv")
